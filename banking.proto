@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package banking;
+
+// ---------------------- SERVICES ----------------------
+
+service AccountService {
+  // Retrieve the current balance of a user's account.
+  rpc getBalance(AccountRequest) returns (BalanceResponse);
+
+  // Update the balance after a transaction (amount can be +ve or -ve).
+  rpc updateBalance(UpdateBalanceRequest) returns (BalanceResponse);
+}
+
+service TransactionService {
+  // Initiates a transfer from one account to another.
+  rpc initiateTransfer(TransferRequest) returns (TransferResponse);
+
+  // Retrieves a list of transactions for a user.
+  rpc getTransactionHistory(TransactionHistoryRequest) returns (TransactionHistoryResponse);
+}
+
+// ---------------------- MESSAGES ----------------------
+
+message AccountRequest {
+  string user_id = 1;
+}
+
+message BalanceResponse {
+  string user_id = 1;
+  double balance = 2;
+  string message = 3;
+}
+
+message UpdateBalanceRequest {
+  string user_id = 1;
+  // Positive = deposit, negative = withdraw (if enough balance)
+  double amount = 2;
+}
+
+message TransferRequest {
+  string from_user_id = 1;
+  string to_user_id = 2;
+  double amount = 3;
+  string description = 4;
+}
+
+message TransferResponse {
+  bool success = 1;
+  string message = 2;
+  double from_new_balance = 3;
+  double to_new_balance = 4;
+}
+
+message Transaction {
+  string transaction_id = 1;
+  string from_user_id = 2;
+  string to_user_id = 3;
+  double amount = 4;
+  string description = 5;
+  string timestamp = 6;
+}
+
+message TransactionHistoryRequest {
+  string user_id = 1;
+}
+
+message TransactionHistoryResponse {
+  repeated Transaction transactions = 1;
+}
